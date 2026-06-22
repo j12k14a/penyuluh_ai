@@ -10,68 +10,68 @@
 
 ---
 
-## 💻 Prasyarat
-Sebelum menginstal aplikasi ini, pastikan komputer Anda sudah terpasang:
-1. **Python 3.8+** (beserta `pip`).
-2. *(Khusus Linux/Ubuntu)* Paket `python3-tk` untuk menjalankan GUI: `sudo apt install python3-tk`.
-3. **API Key Gemini:** Anda memerlukan API Key gratis dari [Google AI Studio](https://aistudio.google.com/app/apikey).
+## 🚀 Cara Instalasi & Menjalankan Aplikasi (Khusus Windows)
 
----
+Bagi rekan-rekan yang menggunakan **Windows 10/11**, silakan ikuti panduan instalasi dari nol (Step 0) berikut ini:
 
-## 🚀 Cara Instalasi & Menjalankan Aplikasi
+### Step 0: Persiapan Sistem
+1. Pastikan laptop Anda sudah terinstal **Python 3.8** atau lebih baru. 
+   - *Jika belum punya, silakan download dari [python.org/downloads](https://www.python.org/downloads/). Saat awal proses instalasi, **SANGAT PENTING** untuk mencentang kotak bertuliskan `Add Python to PATH` di bagian bawah jendela installer.*
+2. Siapkan **API Key Gemini** secara gratis dari [Google AI Studio](https://aistudio.google.com/app/apikey).
 
-Ikuti langkah-langkah di bawah ini secara berurutan menggunakan terminal (misalnya di VS Code):
-
-### 1. Clone Repository
-Pertama, unduh kode proyek ini ke komputer Anda:
-```bash
+### Step 1: Unduh Proyek
+Buka aplikasi **Command Prompt (CMD)**, **PowerShell**, atau terminal **VS Code**. Ketik perintah ini:
+```cmd
 git clone https://github.com/USERNAME_ANDA/penyuluh-ai.git
 cd penyuluh-ai
 ```
-*(Catatan: Ganti URL di atas dengan link repositori GitHub Anda)*
+*(Jika Anda tidak punya Git, Anda bisa mendownload proyek ini sebagai file `.zip` di GitHub, lalu ekstrak foldernya dan buka CMD di dalam folder tersebut).*
 
-### 2. Buat Virtual Environment (Opsional tapi Disarankan)
-Agar pustaka proyek ini tidak bercampur dengan proyek Python Anda yang lain:
-```bash
-python3 -m venv venv
-
-# Aktifkan Virtual Environment:
-# Untuk Windows:
-venv\Scripts\activate
-# Untuk Linux / Mac:
-source venv/bin/activate
+### Step 2: Buat Lingkungan Virtual (Virtual Environment)
+Langkah ini sangat disarankan agar library aplikasi ini tidak bertabrakan dengan proyek Python lain di laptop Anda:
+```cmd
+python -m venv venv
 ```
+Setelah dibuat, **aktifkan** lingkungannya dengan perintah:
+```cmd
+venv\Scripts\activate
+```
+*(Tanda bahwa ini berhasil adalah munculnya tulisan `(venv)` di sebelah kiri baris CMD/PowerShell Anda).*
 
-### 3. Install Dependensi (Library)
-Instal semua pustaka yang dibutuhkan menggunakan `requirements.txt`:
-```bash
+### Step 3: Install Pustaka Tambahan (Library)
+Mari kita pasang semua alat yang dibutuhkan aplikasi (OpenCV, AI, dll):
+```cmd
 pip install -r requirements.txt
 ```
+*(Tunggu proses unduhan hingga selesai dan muncul tulisan 'Successfully installed...').*
 
-### 4. Konfigurasi API Key
-Buka file `predictor.py` di dalam VS Code Anda. 
-Cari baris berikut:
-```python
-API_KEY = "PASTE_API_KEY_ANDA_DI_SINI"
+### Step 4: Memasang Kunci API
+1. Buka folder proyek ini, cari file bernama `predictor.py`, lalu buka menggunakan Code Editor favorit Anda (seperti VS Code atau Notepad).
+2. Cari baris berikut (ada di bagian atas file):
+   ```python
+   API_KEY = "PASTE_API_KEY_ANDA_DI_SINI"
+   ```
+3. Hapus tulisan `PASTE_API_KEY_ANDA_DI_SINI` dan ganti (Paste) dengan kode rahasia yang Anda dapatkan dari Google AI Studio. 
+4. **Save (Simpan)** file tersebut.
+
+### Step 5: Menjalankan Aplikasi
+Semua sudah siap! Pastikan terminal Anda masih berada di dalam folder proyek dan `(venv)` masih aktif. Jalankan aplikasi dengan perintah:
+```cmd
+python main.py
 ```
-Ganti tulisan `PASTE_API_KEY_ANDA_DI_SINI` dengan kunci API Gemini asli Anda yang didapatkan dari Google AI Studio. **Jangan mengunggah (commit) API Key asli Anda ke GitHub terbuka (public)!**
+Aplikasi GUI Penyuluh-AI akan otomatis terbuka. Jika Anda menekan tombol "Buka Kamera", lampu webcam laptop Windows Anda akan langsung menyala! 🎉
 
-### 5. Jalankan Aplikasi!
-Setelah semuanya siap, jalankan perintah ini di terminal:
+---
+
+## 🐧 Pengguna Linux / MacOS
+Bagi yang menggunakan sistem operasi berbasis Unix (Linux/Mac) atau WSL, proses instalasi kurang lebih sama. Perbedaan utamanya hanya pada cara aktivasi environment dan perintah pemanggilannya:
 ```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 python3 main.py
 ```
-Aplikasi GUI Penyuluh-AI akan terbuka dan siap membantu Anda!
+*(Catatan Khusus WSL: Akses webcam dari WSL memerlukan proses `bind` perangkat USB menggunakan aplikasi `usbipd` di host Windows).*
 
 ---
-
-## 🛠️ Tentang `usbipd` (Bagi Pengguna WSL Windows)
-Jika Anda menggunakan Linux virtual melalui WSL pada Windows, tombol "Buka Kamera" mungkin akan ditolak aksesnya oleh sistem. Untuk mengaktifkannya, Anda harus melakukan *bind* kamera dari host Windows menggunakan PowerShell Administrator:
-1. `usbipd list`
-2. `usbipd bind --busid <ANGKA_BUSID> --force`
-3. `usbipd attach --wsl --busid <ANGKA_BUSID>`
-4. Lalu beri izin pada WSL: `sudo chmod 777 /dev/video*`
-
----
-
 *Dibuat untuk memajukan teknologi agrikultur Indonesia.* 🌱
