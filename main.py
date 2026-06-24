@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog
-from PIL import Image, ImageTk
-import threading
-import re
-import cv2
-import predictor
+from PIL import Image, ImageTk # Library Pillow untuk mengolah dan menampilkan gambar
+import threading # Untuk menjalankan proses AI di thread terpisah
+import re # Regular Expression untuk memformat output AI
+import cv2 # OpenCV untuk akses kamera
+import predictor # File predictor.py yang berisi logika AI
 
 # Tema Warna Agrikultur yang elegan
 BG_COLOR = "#F1F8E9"         
@@ -16,26 +16,28 @@ FONT_NORMAL = ("Segoe UI", 12)
 FONT_RESULT = ("Segoe UI", 12)
 
 class PenyuluhAIApp:
+    # Constructor
+    # Dipanggil otomatis saat object dibuat
     def __init__(self, root):
-        self.root = root
+        self.root = root # Menyimpan window utama Tkinter ke dalam object, self merepresentasikan object yang sedang aktif
         self.root.title("Penyuluh-AI: Sistem Pakar Botani Interaktif")
         self.root.geometry("1000x900")
         self.root.configure(bg=BG_COLOR)
         
-        self.image_path = None
+        self.image_path = None # Menyimpan lokasi gambar yang dipilih user
         self.ai_session = None  # Objek memori percakapan
         
-        self.create_widgets()
+        self.create_widgets() # Membuat seluruh komponen GUI
         
     def create_widgets(self):
         # Header
-        header_frame = tk.Frame(self.root, bg=PRIMARY_COLOR, pady=15)
+        header_frame = tk.Frame(self.root, bg=PRIMARY_COLOR, pady=15) # Membuat container/frame untuk bagian header aplikasi
         header_frame.pack(fill=tk.X)
         
         title_label = tk.Label(header_frame, text="🌿 Penyuluh-AI", font=FONT_TITLE, bg=PRIMARY_COLOR, fg="white")
         title_label.pack()
         
-        # Area Tombol Utama
+        # Area Tombol Utama btn = button
         btn_frame = tk.Frame(self.root, bg=BG_COLOR, pady=10)
         btn_frame.pack()
 
@@ -103,9 +105,9 @@ class PenyuluhAIApp:
             self.insert_chat_text("Sistem", "Foto dimuat dari galeri. Klik 'Mulai Analisis'!")
 
     def open_camera(self):
-        # Membuka kamera dengan OpenCV
-        cap = cv2.VideoCapture(0)
-        if not cap.isOpened():
+        # Membuka kamera dengan OpenCV = Method
+        cap = cv2.VideoCapture(0) # Mengaktifkan webcam default komputer
+        if not cap.isOpened(): # Mengecek apakah kamera berhasil dibuka
             messagebox.showerror("Error Kamera", "Kamera tidak ditemukan atau ditolak aksesnya oleh sistem operasi (Sering terjadi di WSL Linux).")
             return
             
@@ -119,9 +121,9 @@ class PenyuluhAIApp:
         if ret:
             # Simpan foto sementara
             temp_path = "temp_camera.jpg"
-            cv2.imwrite(temp_path, frame)
-            self.image_path = temp_path
-            self.display_image(temp_path)
+            cv2.imwrite(temp_path, frame) # Mengambil satu frame gambar dari kamera.
+            self.image_path = temp_path   # Menyimpan lokasi gambar.
+            self.display_image(temp_path) # Menampilkan gambar ke GUI.
             self.btn_analyze.config(state=tk.NORMAL)
             self.clear_chat()
             self.insert_chat_text("Sistem", "Foto berhasil diambil dari kamera. Klik 'Mulai Analisis'!")
@@ -130,11 +132,11 @@ class PenyuluhAIApp:
         
         cap.release()
 
-    def display_image(self, path):
+    def display_image(self, path): 
         try:
             img = Image.open(path)
-            img.thumbnail((450, 450), Image.Resampling.LANCZOS)
-            photo = ImageTk.PhotoImage(img)
+            img.thumbnail((450, 450), Image.Resampling.LANCZOS) # Mengecilkan gambar agar sesuai area GUI;Mengubah gambar Pillow menjadi format yang dapat ditampilkan Tkinter.
+            photo = ImageTk.PhotoImage(img) 
             self.image_label.config(image=photo, text="", width=450, height=450)
             self.image_label.image = photo
         except Exception as e:
@@ -168,16 +170,16 @@ class PenyuluhAIApp:
 
     def start_analysis(self):
         if not self.image_path: return
-        self.btn_analyze.config(state=tk.DISABLED)
+        self.btn_analyze.config(state=tk.DISABLED) # Tombol dinonaktifkan terlebih dahulu sampai user memilih gambar.
         self.lbl_loading.config(text="Memproses gambar... mohon tunggu.")
         
         # Buat sesi AI baru
         self.ai_session = predictor.PakarBotaniSession()
-        
-        threading.Thread(target=self.run_prediction, daemon=True).start()
+        # Menjalankan analisis AI di thread terpisah agar GUI tidak freeze.
+        threading.Thread(target=self.run_prediction, daemon=True).start() 
 
     def run_prediction(self):
-        result = self.ai_session.predict_disease(self.image_path)
+        result = self.ai_session.predict_disease(self.image_path) # Mengirim gambar ke Gemini AI untuk dianalisis.
         self.root.after(0, self.update_gui_after_prediction, result)
 
     def update_gui_after_prediction(self, result):
@@ -188,7 +190,7 @@ class PenyuluhAIApp:
         self.btn_send.config(state=tk.NORMAL)
 
     def send_chat(self):
-        question = self.entry_chat.get().strip()
+        question = self.entry_chat.get().strip() # Mengambil pertanyaan dari user.
         if not question or not self.ai_session: return
         
         self.entry_chat.delete(0, tk.END)
@@ -199,7 +201,7 @@ class PenyuluhAIApp:
         threading.Thread(target=self.run_chat, args=(question,), daemon=True).start()
 
     def run_chat(self, question):
-        result = self.ai_session.ask_follow_up(question)
+        result = self.ai_session.ask_follow_up(question) # Mengirim pertanyaan lanjutan ke AI.
         self.root.after(0, self.update_gui_after_chat, result)
 
     def update_gui_after_chat(self, result):
@@ -212,11 +214,25 @@ class PenyuluhAIApp:
         full_text = self.txt_result.get(1.0, tk.END)
         filepath = filedialog.asksaveasfilename(defaultextension=".txt", initialfile="Laporan_PenyuluhAI.txt", title="Simpan Laporan")
         if filepath:
-            with open(filepath, "w", encoding="utf-8") as f:
-                f.write(full_text)
+            with open(filepath, "w", encoding="utf-8") as f: # Membuat file laporan baru.
+                f.write(full_text) # Menyimpan hasil percakapan ke file.
             messagebox.showinfo("Sukses", "Laporan berhasil disimpan!")
-
+            
+# Mengecek apakah file ini dijalankan langsung oleh Python
+# Jika iya, maka nilai __name__ akan menjadi "__main__"
+# Jika file ini hanya di-import oleh file lain, blok ini tidak akan dijalankan
 if __name__ == "__main__":
+
+    # Membuat window utama (root window) dari Tkinter
+    # Semua komponen GUI akan ditempatkan di dalam window ini
     root = tk.Tk()
+
+    # Membuat object dari class PenyuluhAIApp
+    # Constructor (__init__) akan dipanggil otomatis
+    # dan seluruh tampilan aplikasi akan dibuat
     app = PenyuluhAIApp(root)
+
+    # Menjalankan event loop Tkinter
+    # Program akan terus berjalan dan menunggu interaksi user
+    # seperti klik tombol, input keyboard, atau event lainnya
     root.mainloop()
