@@ -2,7 +2,7 @@ from google import genai
 import PIL.Image
 
 # 1. PENTING: Jangan lupa isi ulang API Key Anda di sini
-API_KEY = "AQ.Ab8RN6IdYaBvLyiJ02yYShEyZKvc8mEtbQpRi3QbfQPxzzZNlw"
+API_KEY = "AQ.---------------------------------------------------"
 client = genai.Client(api_key=API_KEY)
 
 class PakarBotaniSession:
