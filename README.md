@@ -1,5 +1,7 @@
 # 🌿 Penyuluh-AI
 
+<img width="1076" height="965" alt="image" src="https://github.com/user-attachments/assets/8e38fd46-f027-466f-86dc-ac508665cf2b" />
+
 **Penyuluh-AI** adalah aplikasi desktop cerdas berbasis Python yang berfungsi sebagai asisten dan pakar botani interaktif. Dengan memanfaatkan **Google Gemini 2.5 Flash**, aplikasi ini mampu mengidentifikasi spesies tanaman, mendeteksi penyakit atau kekurangan nutrisi dari foto daun, dan memberikan saran penanganan langsung layaknya seorang ahli.
 
 ## 🌟 Fitur Utama
